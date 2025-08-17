@@ -1,0 +1,19 @@
+seed: 42
+T: 2000
+decay_b: 0.02
+inertia_s: 0.96
+clamp_s: {valence: [-1,1], arousal: [0,1], dominance: [-1,1]}
+rewards:
+  lambda_pred: 0.3
+  lambda_smooth: 0.01
+modulators:
+  init: [0.5, 0.5, 0.5]   # DA, 5HT, NE
+  kappa_tau: 0.8
+env:
+  regime_len: 50
+policy:
+  n_actions: 4
+  lr: 1e-3
+logging:
+  sqlite_path: data/runs.sqlite
+  parquet_dir: data/episodes
