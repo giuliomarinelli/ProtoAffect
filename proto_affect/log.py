@@ -45,8 +45,16 @@ INSERT INTO steps(
   s_valence, s_arousal, s_dominance,
   m_da, m_5ht, m_ne,
   action, reward, loss
-) VALUES (?,?,?,?, ?,?,?,?, ?,?,?, ?,?,?, ?,?,?);
+) VALUES (
+  ?, ?,         -- run_id, t
+  ?, ?, ?, ?,   -- novelty, threat, support, control
+  ?, ?, ?,      -- b_energy, b_safety, b_belong
+  ?, ?, ?,      -- s_valence, s_arousal, s_dominance
+  ?, ?, ?,      -- m_da, m_5ht, m_ne
+  ?, ?, ?       -- action, reward, loss
+);
 """
+
 
 def _ensure_db(db_path: str) -> sqlite3.Connection:
     Path(os.path.dirname(db_path) or ".").mkdir(parents=True, exist_ok=True)
