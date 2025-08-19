@@ -1,8 +1,10 @@
 import torch
-from .types import CoreState
+from torch import Tensor
+from .types import CoreState, RunConfig
 
-def compute_loss(state: CoreState, pred_err: torch.Tensor,
-                 lambda_pred: float = 0.3, lambda_smooth: float = 0.01) -> torch.Tensor:
-    homeo = torch.sum((state.b - state.b_star)**2)
-    smooth = torch.sum((state.s[1:] - state.s[1:].detach())*0)  # placeholder reg
-    return homeo + lambda_pred*pred_err + lambda_smooth*smooth
+def homeostasis_loss(state: CoreState) -> Tensor:
+    return torch.sum((state.b - state.b_star) ** 2)
+
+def total_loss(state: CoreState, pred_err: Tensor, cfg: RunConfig) -> Tensor:
+    # V1: pred_err = 0.0; reg su s la aggiungiamo dopo
+    return homeostasis_loss(state) + cfg.lambda_pred * pred_err

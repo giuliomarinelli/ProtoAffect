@@ -13,6 +13,9 @@ class Appraisal(nn.Module):
                 [ +0.1, -0.2, +0.1, +0.6],  # -> Δdominance
             ], dtype=torch.float32))
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        ds = self.net(x) if self.learnable else (self.W @ x)
+    def forward(self, x):
+        if x.dim() == 1:
+            ds = self.net(x) if self.learnable else (self.W @ x)
+        else:
+            ds = self.net(x) if self.learnable else (x @ self.W.T)
         return torch.clamp(ds, -0.3, 0.3)
