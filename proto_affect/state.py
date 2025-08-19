@@ -20,18 +20,13 @@ def apply_affect(state: CoreState, ds: torch.Tensor, inertia: float = 0.96) -> N
     ])
     state.s = s
 
-def apply_transition(state: CoreState, action: int, decay_b: float = 0.02) -> None:
-    # decadimento bisogni
+def apply_transition(state: CoreState, action: int, decay_b: float = 0.015) -> None:
     state.b = torch.clamp(state.b - decay_b, 0.0, 1.0)
-    # effetti delle azioni
     if action == 0:   # rest
         state.b[0] = torch.clamp(state.b[0] + 0.08, 0, 1); state.s[2] -= 0.02
     elif action == 1: # seek_support
         state.b[2] = torch.clamp(state.b[2] + 0.06, 0, 1); state.s[1] += 0.02
-    elif action == 2: # avoid
-        state.b[1] = torch.clamp(state.b[1] + 0.06, 0, 1); state.s[0] -= 0.02
-    elif action == 3: # explore
-        state.b[1] = torch.clamp(state.b[1] - 0.03, 0, 1); state.s[1] += 0.03
-    state.s[0] = torch.clamp(state.s[0], *CLAMP_V)
-    state.s[1] = torch.clamp(state.s[1], *CLAMP_A)
-    state.s[2] = torch.clamp(state.s[2], *CLAMP_D)
+    elif action == 2: # avoid  (più forte)
+        state.b[1] = torch.clamp(state.b[1] + 0.10, 0, 1); state.s[0] -= 0.02
+    elif action == 3: # explore (meno punitivo)
+        state.b[1] = torch.clamp(state.b[1] - 0.015, 0, 1); state.s[1] += 0.03
